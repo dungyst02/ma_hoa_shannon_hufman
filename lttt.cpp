@@ -1,3 +1,4 @@
+
 #include<iostream>
 #include<string>
 #include<cstring>
@@ -58,25 +59,27 @@ void binary(float p[], float p1[], float l[], float l1[], string str[], int n) {
     }
 }
 
-
-void Shannon(char text[]){
-	char temp_text[500];
-	//copy sang mot chuoi moi
-	for(int i = 0; i < strlen(text); i++) {
-		temp_text[i] = text[i];
+void xoa1PhanTu(char a[], int &n, int viTriXoa) {
+	for(int i = viTriXoa; i < n; i++) {
+		a[i] = a[i + 1];
 	}
-	int n = strlen(temp_text);
-	//Xoa cac phan tu trung nhau
+	n--;
+}
+void xoaCacPhanTuTrungNhau(char a[], int &n) {
 	for(int i = 0; i < n; i++) {
-		for(int j = i+ 1; j < n; j++) {
-			if(temp_text[i] == temp_text[j]) {
-				for(int k = j; k < n; k++) {
-					temp_text[k] = temp_text[k  + 1];
-				}
-				n--;
+		for(int j = i + 1; j <n ; j++) {
+			if(a[i] == a[j]) {
+				xoa1PhanTu(a, n, j);
 			}
 		}
 	}
+}
+void Shannon(char text[]){
+	char temp_text[500];
+	//copy sang mot chuoi moi
+	strcpy(temp_text, text);
+	int n = strlen(temp_text);
+	xoaCacPhanTuTrungNhau(temp_text, n);
 	float a[100];
 	int count[100];
 	for(int i = 0; i < n; i++) {
@@ -86,6 +89,7 @@ void Shannon(char text[]){
 		}
 		a[i] = (float)count[i] / strlen(text);
 	}
+	
 	    
         sort(a, n, temp_text);
 		
@@ -104,6 +108,27 @@ void Shannon(char text[]){
 				cout << temp_text[i] << ": ";
                cout << str[i];
             }
+		cout << "\nCac xac suat xuat hien cua tung ky tu: ";
+	       for(int i = 0; i < n; i++) {
+		     cout << a[i] <<" ";
+	      }
+		cout <<"\nChieu dai tu ma: ";
+		for(int i = 0; i < n; i++) {
+			cout << l[i] << " ";
+		}
+		
+		float l_trungbinh = 0;
+		for(int i = 0; i < n; i++) {
+			l_trungbinh += l[i] * a[i];
+		}
+		
+		cout << "\nChieu dai trung binh cua tu ma: " << l_trungbinh;
+		float Hx = 0; //Entropy
+		for(int i = 0; i < n; i++) {
+			Hx += a[i] * log2(1 / a[i]);
+		}
+	
+		cout << "\nKt = " << (float)Hx / l_trungbinh;
 			cout << "\nChuoi da duoc ma hoa: " <<endl;
 		for(int i = 0; i < strlen(text); i++) {
 			for(int j = 0; j < n; j++) {
@@ -192,9 +217,58 @@ void buildHuffmanTree(string text)
 	encode(root, "", huffmanCode);
 
 	cout << "\nMa Huffman :\n" << '\n';
+	cout <<'\n';
+	
+	//Tính xác suất xuất hiện của từng phần tử
+	int i = 0;
+	float a[100];
+	for(auto it: huffmanCode) {
+		a[i] =(float) freq[it.first] / text.length();
+		i++;
+	}
+	//in ra màn hình xác suất
+	cout << "\nXac suat xuat hien cua cac phan tu: "<<endl;
+	i = 0;
+ 	for (auto it: huffmanCode) {
+		cout << it.first<< ": "<<a[i] <<endl;
+		i++;
+	}
+	
+	//Tính chiều dài từ mã
+	int l[100];
+	i = 0;
+	for (auto pair: huffmanCode) {
+		l[i] = (pair.second).length();
+		i++;
+	}
+	//in ra màn hình chiều dài từ mã
+	cout << "\nChieu dai tu ma: " << endl;
+	i = 0;
+	for (auto pair: huffmanCode) {
+		cout << pair.first << ": " << l[i] << endl; 
+		i++;
+	}
+	
+	
+	//Tính chiều dài trung bình
+	float l_trungbinh = 0;
+	i = 0;
+	for(auto pair: huffmanCode) {
+		l_trungbinh += a[i] * l[i];
+		i++;
+	}
+	cout <<"\nChieu dai trung binh: " <<l_trungbinh<<endl;
 	for (auto pair: huffmanCode) {
 		cout << pair.first << " " << pair.second << '\n';
 	}
+	float Hx = 0; //entropy
+	i = 0;
+	for(auto pair: huffmanCode) {
+		Hx += a[i] * log2(1 / a[i]);
+		i++;
+	}
+	cout << "\nKt = " << (float) Hx/ l_trungbinh;
+
 	cout << "\nChuoi ban dau :\n" << text << '\n';
 	string str = "";
 	for (char ch: text) {
@@ -205,7 +279,8 @@ void buildHuffmanTree(string text)
 }
 
 int main() {
-	string text = "Dai hoc bach khoa Ha Noi.";
+	string text = "Dai hoc Bach Khoa Ha Noi.";
+	
 	cout << "\nShannon: ";
 	 char text_char[text.length() + 1]; 
  
@@ -214,5 +289,6 @@ int main() {
     
     
     buildHuffmanTree(text);
+	cout << "\t\t\t-END-";
     return 0;
 }
