@@ -258,16 +258,17 @@ void buildHuffmanTree(string text)
 		i++;
 	}
 	cout <<"\nChieu dai trung binh: " <<l_trungbinh<<endl;
-	for (auto pair: huffmanCode) {
-		cout << pair.first << " " << pair.second << '\n';
-	}
 	float Hx = 0; //entropy
 	i = 0;
 	for(auto pair: huffmanCode) {
 		Hx += a[i] * log2(1 / a[i]);
 		i++;
 	}
-	cout << "\nKt = " << (float) Hx/ l_trungbinh;
+	cout << "\nKt = " << (float) Hx/ l_trungbinh << endl;
+	for (auto pair: huffmanCode) {
+		cout << pair.first << " " << pair.second << '\n';
+	}
+	
 
 	cout << "\nChuoi ban dau :\n" << text << '\n';
 	string str = "";
