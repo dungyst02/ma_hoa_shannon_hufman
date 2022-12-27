@@ -25,7 +25,7 @@ void sort(float arr[], int n,  char temp_text[]) {
 				temp_text[i] = temp;
 			}
         }
-    }
+    } 
 }
 //chieu dai l
 int chieuDai(float x) {
